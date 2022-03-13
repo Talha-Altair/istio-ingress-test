@@ -1,0 +1,52 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: env-gateway
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - 'istio.talha.cf'
+    - port:
+        number: 80
+        name: http-2
+        protocol: HTTP
+      hosts:
+        - 'istio-2.talha.cf'
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: env-vsvc
+spec:
+  hosts:
+    - 'istio.talha.cf'
+  gateways:
+    - istio-test/env-gateway
+  http:
+    - route:
+        - destination:
+            host: env-tester.istio-test.svc.cluster.local # Target Service Name
+            port:
+              number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: env-vsvc-2
+spec:
+  hosts:
+    - 'istio-2.talha.cf'
+  gateways:
+    - istio-test/env-gateway
+  http:
+    - route:
+        - destination:
+            host: env-tester-2.istio-test.svc.cluster.local # Target Service Name
+            port:
+              number: 80

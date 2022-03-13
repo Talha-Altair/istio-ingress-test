@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: env-tester-2
+  labels:
+    app: env-tester-2
+spec:
+  selector:
+    matchLabels:
+      app: env-tester-2
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: env-tester-2
+    spec:
+      containers:
+        - name: env-tester-2
+          image: docker.io/talhaabdurrahman/env-tester:latest
+          env:
+            - name: talha
+              value: talha21
+          ports:
+            - containerPort: 8500
+              name: env-tester-2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: env-tester-2
+spec:
+  selector:
+    app: env-tester-2
+  type: ClusterIP
+  ports:
+  - name: env-tester-2
+    protocol: TCP
+    port: 80
+    targetPort: 8500
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: env-tester
+  labels:
+    app: env-tester
+spec:
+  selector:
+    matchLabels:
+      app: env-tester
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: env-tester
+    spec:
+      containers:
+        - name: env-tester
+          image: docker.io/talhaabdurrahman/env-tester:latest
+          env:
+            - name: talha
+              value: talha22
+          ports:
+            - containerPort: 8500
+              name: env-tester
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: env-tester
+spec:
+  selector:
+    app: env-tester
+  type: ClusterIP
+  ports:
+  - name: env-tester
+    protocol: TCP
+    port: 80
+    targetPort: 8500
